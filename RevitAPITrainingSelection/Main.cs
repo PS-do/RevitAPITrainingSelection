@@ -15,14 +15,20 @@ namespace RevitAPITrainingSelection
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            //    TaskDialog.Show("Сообщение", "Тест");
-            //    return Result.Succeeded;
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
-            var pickedPoint = uidoc.Selection.PickPoint(ObjectSnapTypes.Endpoints, "выберите точку");
 
+            XYZ pickedPoint = null;
+            try
+            {
+                pickedPoint = uidoc.Selection.PickPoint(ObjectSnapTypes.Endpoints, "выберите точку");
+            }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+            { }
 
+            if (pickedPoint == null)
+                return Result.Cancelled;
             TaskDialog.Show("PointInfo:\n", $"X: { pickedPoint.X}\n" +
                                          $"Y: {pickedPoint.Y}\n" +
                                          $"Z: {pickedPoint.Z}");
