@@ -19,20 +19,12 @@ namespace RevitAPITrainingSelection
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            XYZ pickedPoint = null;
-            try
-            {
-                pickedPoint = uidoc.Selection.PickPoint(ObjectSnapTypes.Endpoints, "выберите точку");
-            }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-            { }
-
-            if (pickedPoint == null)
-                return Result.Cancelled;
-            TaskDialog.Show("PointInfo:\n", $"X: { pickedPoint.X}\n" +
-                                         $"Y: {pickedPoint.Y}\n" +
-                                         $"Z: {pickedPoint.Z}");
-
+            List<FamilyInstance> fInstances = new FilteredElementCollector(doc)
+                .OfCategory(BuiltInCategory.OST_Doors)
+                .WhereElementIsNotElementType()
+                .Cast<FamilyInstance>()
+                .ToList();
+            TaskDialog.Show("Doors count", fInstances.Count.ToString());
             return Result.Succeeded;
 
         }
