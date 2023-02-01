@@ -20,26 +20,12 @@ namespace RevitAPITrainingSelection
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
+            var pickedPoint = uidoc.Selection.PickPoint(ObjectSnapTypes.Endpoints, "выберите точку");
 
 
-            //Reference selectedElementRef = uidoc.Selection.PickObject(ObjectType.Edge, "Выберите элемент по ребру");
-            IList<Reference> selectedElementRefList = uidoc.Selection.PickObjects(ObjectType.Element,new WallFilter(), "Выберите стены");
-
-            var wallList = new List<Wall>();
-            string info = string.Empty;
-            foreach (var selectedElement in selectedElementRefList)
-            {
-                Wall oWall = doc.GetElement(selectedElement) as Wall;
-                wallList.Add(oWall);
-                var width = UnitUtils.ConvertFromInternalUnits(oWall.Width, UnitTypeId.Millimeters);
-                info +=$"Name: {oWall.Name}, width:{width}\n";
-
-            }
-            info += $"\nколичество: {wallList.Count}";
-
-
-            //Element element=doc.GetElement(selectedElementRef);
-            TaskDialog.Show("Selection", info);
+            TaskDialog.Show("PointInfo:\n", $"X: { pickedPoint.X}\n" +
+                                         $"Y: {pickedPoint.Y}\n" +
+                                         $"Z: {pickedPoint.Z}");
 
             return Result.Succeeded;
 
