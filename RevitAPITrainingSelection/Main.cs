@@ -19,17 +19,14 @@ namespace RevitAPITrainingSelection
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            ElementCategoryFilter windowsCategoryFilter = new ElementCategoryFilter(BuiltInCategory.OST_Windows);
-            ElementClassFilter windowInstancesFilter = new ElementClassFilter(typeof(FamilyInstance));  // выберет только те, которые являются экземплярами симейств(без типов)
-            LogicalAndFilter windowsFilter = new LogicalAndFilter(windowsCategoryFilter, windowInstancesFilter);
-
-            var windows = new FilteredElementCollector(doc)
-                .WherePasses(windowsFilter)
-                .Cast<FamilyInstance>()
+            List<FamilySymbol> dorTypes = new FilteredElementCollector(doc)
+                .OfCategory(BuiltInCategory.OST_Doors)
+                .WhereElementIsElementType()
+                .Cast<FamilySymbol>()
                 .ToList();
 
-            
-            TaskDialog.Show("Windows info", windows.Count.ToString());
+
+            TaskDialog.Show("Door types info", dorTypes.Count.ToString());
             return Result.Succeeded;
 
         }
