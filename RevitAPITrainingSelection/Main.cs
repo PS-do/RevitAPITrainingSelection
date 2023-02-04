@@ -19,12 +19,17 @@ namespace RevitAPITrainingSelection
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            var walls = new FilteredElementCollector(doc)
-                .OfClass(typeof (Wall))
-                .Cast<Wall>()//приведение к типу стен
+            ElementCategoryFilter windowsCategoryFilter = new ElementCategoryFilter(BuiltInCategory.OST_Windows);
+            ElementClassFilter windowInstancesFilter = new ElementClassFilter(typeof(FamilyInstance));  // выберет только те, которые являются экземплярами симейств(без типов)
+            LogicalAndFilter windowsFilter = new LogicalAndFilter(windowsCategoryFilter, windowInstancesFilter);
+
+            var windows = new FilteredElementCollector(doc)
+                .WherePasses(windowsFilter)
+                .Cast<FamilyInstance>()
                 .ToList();
-                        
-            TaskDialog.Show("Wall info", walls.Count.ToString());
+
+            
+            TaskDialog.Show("Windows info", windows.Count.ToString());
             return Result.Succeeded;
 
         }
