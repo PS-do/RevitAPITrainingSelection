@@ -27,7 +27,11 @@ namespace RevitAPITrainingSelection
                 {
                     ts.Start();
                     var familyInstance = (FamilyInstance)selectedElement;
-                    Parameter commentParameter = familyInstance.LookupParameter
+                    Parameter commentParameter = familyInstance.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+                    commentParameter.Set("Teстовый комментарий");
+
+                    Parameter typeCommentParameter = familyInstance.Symbol.get_Parameter(BuiltInParameter.ALL_MODEL_TYPE_COMMENTS);
+                    typeCommentParameter.Set("typeCommentParameter");
                     ts.Commit();
                 }
 
