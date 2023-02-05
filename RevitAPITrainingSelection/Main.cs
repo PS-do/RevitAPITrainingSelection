@@ -19,12 +19,25 @@ namespace RevitAPITrainingSelection
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            List<FamilyInstance> fInstances = new FilteredElementCollector(doc, doc.ActiveView.Id)//выбираем видимые на активном виде
-                .OfCategory(BuiltInCategory.OST_Doors)
-                .WhereElementIsNotElementType()
-                .Cast<FamilyInstance>()
-                .ToList();
-            TaskDialog.Show("Doors count", fInstances.Count.ToString());
+            var selectedRef = uidoc.Selection.PickObject(ObjectType.Element, "Выберите элемент");
+            var selectedElement=doc.GetElement(selectedRef);
+            if (selectedElement is Wall)
+            {
+                Parameter lengthParameter1 = selectedElement.LookupParameter("Длина");  
+                if (lengthParameter1.StorageType==StorageType.Double)
+                {
+                    TaskDialog.Show("Length1",lengthParameter1.AsDouble().ToString());
+                }
+
+
+                Parameter lengthParameter2 = selectedElement.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH);
+                if (lengthParameter2.StorageType == StorageType.Double)
+                {
+                    TaskDialog.Show("Length2", lengthParameter1.AsDouble().ToString());
+                }
+
+            }
+
             return Result.Succeeded;
 
         }
