@@ -23,14 +23,13 @@ namespace RevitAPITrainingSelection
             var selectedElement=doc.GetElement(selectedRef);
             if (selectedElement is FamilyInstance)
             {
-                var familyInstance = (FamilyInstance)selectedElement;
-                Parameter widthParameter1 = familyInstance.Symbol.LookupParameter("Ширина");
-                Parameter widthParameter2 = familyInstance.Symbol.get_Parameter(BuiltInParameter.CASEWORK_WIDTH);
-
-
-                TaskDialog.Show("width info",
-                    "widthParameter1="+widthParameter1.AsDouble().ToString()+"\n"+
-                    "widthParameter2=" + widthParameter2.AsDouble().ToString());
+               using (Transaction ts = new Transaction(doc,"Set parametrs"))
+                {
+                    ts.Start();
+                    var familyInstance = (FamilyInstance)selectedElement;
+                    Parameter commentParameter = familyInstance.LookupParameter
+                    ts.Commit();
+                }
 
             }
 
